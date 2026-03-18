@@ -48,6 +48,7 @@ class Player:
         self.isOnGround = False
         self.isAlive = True
         self.hasReachedExit = False
+        self.sprite: pygame.Surface | None = None
 
     def resetToSpawn(self) -> None:
         """Reset transient player state after death or manual restart."""
@@ -122,4 +123,7 @@ class Player:
 
     def draw(self, surface: pygame.Surface) -> None:
         """Draw a simple placeholder rectangle for this character."""
+        if self.sprite is not None:
+            surface.blit(self.sprite, self.rect)
+            return
         pygame.draw.rect(surface, self.color, self.rect)

@@ -14,8 +14,13 @@ class Platform:
     """A solid rectangle that players can stand on and collide with."""
 
     rect: pygame.Rect
+    platformType: str = "platform"
+    sprite: pygame.Surface | None = None
 
     def draw(self, surface: pygame.Surface) -> None:
+        if self.sprite is not None:
+            surface.blit(self.sprite, self.rect)
+            return
         pygame.draw.rect(surface, colors.PLATFORM_BROWN, self.rect)
         pygame.draw.rect(surface, colors.PLATFORM_OUTLINE, self.rect, width=2)
 
@@ -26,8 +31,12 @@ class Hazard:
 
     rect: pygame.Rect
     hazardType: str
+    sprite: pygame.Surface | None = None
 
     def draw(self, surface: pygame.Surface) -> None:
+        if self.sprite is not None:
+            surface.blit(self.sprite, self.rect)
+            return
         color_lookup = {
             "fire": colors.FIRE_HAZARD_COLOR,
             "water": colors.WATER_HAZARD_COLOR,
@@ -42,8 +51,12 @@ class ExitDoor:
 
     rect: pygame.Rect
     exitType: str
+    sprite: pygame.Surface | None = None
 
     def draw(self, surface: pygame.Surface) -> None:
+        if self.sprite is not None:
+            surface.blit(self.sprite, self.rect)
+            return
         color_lookup = {
             "fire": colors.FIRE_EXIT_COLOR,
             "water": colors.WATER_EXIT_COLOR,

@@ -6,6 +6,7 @@ import pygame
 
 import colors
 import settings
+from game.assets import loadScaledSprite
 from game.level import Level, loadStarterLevel
 from game.player import Player
 from game.ui import GameUI
@@ -40,6 +41,57 @@ class GameManager:
         self.gameState = "playing"
         self.statusMessage: str | None = None
         self.statusMessageTimerSeconds = 0.0
+        self.backgroundSprite: pygame.Surface | None = None
+
+        self._loadVisualAssets()
+
+    def _loadVisualAssets(self) -> None:
+        """Load sprites and attach them to gameplay objects.
+
+        If a file is missing, we keep rectangle fallbacks so the game
+        remains fully playable during collaboration.
+        """
+
+        self.backgroundSprite = loadScaledSprite(
+            "background/cave.png",
+            (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT),
+        )
+
+        self.fireboy.sprite = loadScaledSprite(
+            "players/fireboy.png",
+            (self.fireboy.rect.width, self.fireboy.rect.height),
+            useWhiteColorKey=True,
+        )
+        self.watergirl.sprite = loadScaledSprite(
+            "players/watergirl.png",
+            (self.watergirl.rect.width, self.watergirl.rect.height),
+            useWhiteColorKey=True,
+        )
+
+        for platform in self.level.platforms:
+            spritePath = "tiles/ground.png" if platform.platformType == "ground" else "tiles/platform.png"
+            platform.sprite = loadScaledSprite(spritePath, (platform.rect.width, platform.rect.height))
+
+        for hazard in self.level.hazards:
+            hazardSpriteByType = {
+                "fire": "hazards/fire.png",
+                "water": "hazards/water.png",
+                "toxic": "hazards/toxic.png",
+            }
+            spritePath = hazardSpriteByType.get(hazard.hazardType)
+            if spritePath is None:
+                continue
+            hazard.sprite = loadScaledSprite(spritePath, (hazard.rect.width, hazard.rect.height))
+
+        for exitDoor in self.level.exits:
+            exitSpriteByType = {
+                "fire": "exits/fire_door.png",
+                "water": "exits/water_door.png",
+            }
+            spritePath = exitSpriteByType.get(exitDoor.exitType)
+            if spritePath is None:
+                continue
+            exitDoor.sprite = loadScaledSprite(spritePath, (exitDoor.rect.width, exitDoor.rect.height))
 
     def handleEvent(self, event: pygame.event.Event) -> None:
         """Handle event-driven controls like manual restart."""
@@ -102,7 +154,10 @@ class GameManager:
 
     def draw(self, surface: pygame.Surface) -> None:
         """Draw all world objects and the UI."""
-        surface.fill(colors.DARK_BG)
+        if self.backgroundSprite is not None:
+            surface.blit(self.backgroundSprite, (0, 0))
+        else:
+            surface.fill(colors.DARK_BG)
 
         for platform in self.level.platforms:
             platform.draw(surface)

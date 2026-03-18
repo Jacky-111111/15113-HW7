@@ -27,13 +27,13 @@ STARTER_LEVEL_DEFINITION = {
         "water": (120, 530),
     },
     "platformRects": [
-        (0, 608, 960, 32),  # Ground
-        (180, 535, 170, 24),
-        (430, 495, 150, 24),
-        (680, 450, 200, 24),
-        (310, 380, 150, 24),
-        (530, 315, 160, 24),
-        (140, 275, 170, 24),
+        {"platformType": "ground", "rect": (0, 608, 960, 32)},  # Ground
+        {"platformType": "platform", "rect": (180, 535, 170, 24)},
+        {"platformType": "platform", "rect": (430, 495, 150, 24)},
+        {"platformType": "platform", "rect": (680, 450, 200, 24)},
+        {"platformType": "platform", "rect": (310, 380, 150, 24)},
+        {"platformType": "platform", "rect": (530, 315, 160, 24)},
+        {"platformType": "platform", "rect": (140, 275, 170, 24)},
     ],
     "hazards": [
         {"hazardType": "water", "rect": (250, 608 - 20, 140, 20)},
@@ -57,10 +57,19 @@ def loadStarterLevel() -> Level:
 
     definition = STARTER_LEVEL_DEFINITION
 
-    platforms = [
-        Platform(pygame.Rect(x, y, width, height))
-        for (x, y, width, height) in definition["platformRects"]
-    ]
+    platforms: list[Platform] = []
+    for platformData in definition["platformRects"]:
+        if isinstance(platformData, tuple):
+            # Backward-compatible path for older test data format.
+            x, y, width, height = platformData
+            platforms.append(Platform(rect=pygame.Rect(x, y, width, height)))
+        else:
+            platforms.append(
+                Platform(
+                    rect=pygame.Rect(*platformData["rect"]),
+                    platformType=platformData.get("platformType", "platform"),
+                )
+            )
 
     hazards = [
         Hazard(

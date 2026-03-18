@@ -29,7 +29,7 @@ class GameUI:
         """Draw game title, controls, objective, and runtime status."""
 
         creditLineOne = "Collaborated by Jack Yu and <Name>."
-        creditLineTwo = "With the help of Cursor."
+        creditLineTwo = "Created with the help of AI."
 
         creditSurfaceOne = self.creditFont.render(creditLineOne, True, colors.TEXT_SECONDARY)
         creditRectOne = creditSurfaceOne.get_rect(
