@@ -17,7 +17,7 @@ A small two-player 2D platformer prototype using Pygame:
 ## Intentionally Unfinished
 
 The following are intentionally left for future phases:
-- Sprite art and animation systems
+- Sprite animation states and polished visual effects
 - Moving platforms, buttons/levers, and doors
 - Multi-level progression and level select
 - Audio and polish effects
@@ -43,7 +43,21 @@ This is deliberate so teammates can extend from a stable and readable base.
     physics.py
     ui.py
   assets/
-    .gitkeep
+    players/
+      fireboy.png
+      watergirl.png
+    tiles/
+      platform.png
+      ground.png
+    hazards/
+      fire.png
+      water.png
+      toxic.png
+    exits/
+      fire_door.png
+      water_door.png
+    background/
+      cave.png
 ```
 
 ## Setup
@@ -94,15 +108,19 @@ python3 main.py
   - Watergirl must stand in water exit
   - Win only when both conditions are true at the same time
 - One sample level that is easy to edit in code
+- PNG asset pipeline is connected for players, tiles, hazards, exits, and background
+- Safe fallback rendering: if an image is missing, the game falls back to colored rectangles
+- Top-right in-game collaboration credit text (two-line overlay)
 
 ## Unfinished / Future Work (Suggested Next Steps)
 
 - TODO: Add moving platform support in `game/physics.py` and `game/player.py`.
-- TODO: Replace rectangle placeholders with sprite assets after mechanics stabilize.
+- TODO: Add animated sprite states (idle/run/jump/death) once mechanics are stable.
 - TODO: Move level definitions from `game/level.py` to external JSON files.
 - TODO: Add additional levels and a small level-loading progression system.
 - TODO: Add coyote time / jump buffering for better feel.
 - TODO: Add start and win screens with cleaner UX flow.
+- TODO: Build a lightweight asset manifest and preload check so missing files are reported clearly at startup.
 
 ## Design Decisions
 
@@ -112,8 +130,8 @@ python3 main.py
 - **Simple in-code level format:**  
   The starter level uses readable dictionaries/lists in `game/level.py`. This keeps iteration fast for early HW development and avoids premature tooling complexity.
 
-- **Rectangle placeholder graphics:**  
-  Colored rectangles keep gameplay debugging straightforward. This helps validate collision and rules before art integration.
+- **Sprite-first with robust fallback:**  
+  The game now draws PNG sprites when available, but intentionally falls back to rectangle rendering when files are missing. This keeps teammate setup friction low while supporting visual iteration.
 
 - **Explicit naming and docstrings:**  
   The code favors readability (`horizontalVelocity`, `hasReachedExit`, `resetLevel`) so a collaborator can understand intent quickly.
@@ -131,6 +149,46 @@ This section records the main AI-assisted prompts used for Phase 1.
 - **Tool/Model Used:** Cursor planning + implementation workflow
 - **Purpose:** Convert requirements into an actionable build plan, then implement a playable vertical slice
 - **Key Prompt Summary:** Prioritized structure first, then minimum viable gameplay (movement, collision, typed hazards, typed exits, reset, one sample level), while avoiding overengineering.
+
+## Asset Troubleshooting
+
+### 1) White Background / Poor Transparency
+
+- The loader uses `convert_alpha()` for PNG transparency.
+- If an image still shows white background, the source file may not have a real alpha channel.
+- Current code can also apply a white color key for player sprites.
+- Quick fix: re-export the PNG with transparent background from your art tool.
+
+### 2) Sprite Looks Stretched or Hitbox Feels Wrong
+
+- Collision uses `pygame.Rect` sizes from gameplay constants/level data.
+- Sprites are scaled to fit those rectangles exactly.
+- If visuals feel off, adjust rectangle sizes first (gameplay), then re-check art proportions.
+- For players, edit `PLAYER_WIDTH` / `PLAYER_HEIGHT` in `settings.py`.
+- For map objects, edit rectangle data in `game/level.py`.
+
+### 3) Asset Not Showing
+
+- Check exact file names and paths under `assets/` (case-sensitive on some systems).
+- The project intentionally falls back to rectangle rendering when an image is missing.
+- If you see colored rectangles instead of art, that usually means the file failed to load.
+- Verify all expected files exist:
+  - `assets/players/fireboy.png`
+  - `assets/players/watergirl.png`
+  - `assets/tiles/platform.png`
+  - `assets/tiles/ground.png`
+  - `assets/hazards/fire.png`
+  - `assets/hazards/water.png`
+  - `assets/hazards/toxic.png`
+  - `assets/exits/fire_door.png`
+  - `assets/exits/water_door.png`
+  - `assets/background/cave.png`
+
+### 4) Teammate Pulled Repo But Sees Old Visuals
+
+- Ask them to restart the running Pygame process.
+- Confirm they are running `python3 main.py` from the project root.
+- If needed, remove stale `__pycache__` folders and rerun.
 
 ## Collaboration Notes
 
