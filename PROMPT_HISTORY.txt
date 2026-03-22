@@ -1,0 +1,368 @@
+I used ChatGPT 5.4 Thinking mode to generate a well-designed prompt for Cursor to begin with.
+Cursor selected its model on its own.
+
+
+--------------------------------------------------------------------------------
+
+
+Initial Conversation with ChatGPT:
+
+I asked:
+I'm working on HW7 for 15113. I need to create a game called Fireboy and Watergirl using Python and other related technologies (such as Pygame or trusted Python libraries). 
+I'll provide a detailed prompt for the cursor to start with. Make sure the entire prompt is in English and has detailed annotations, as this is a collaborative assignment and this part should be given to someone else to continue the collaboration.
+[Then I pasted the HW details from the 15113 website.]
+
+ChatGPT's answer:
+You are helping me start a collaborative Python game project for CMU 15-113 HW7.
+
+I want to build a playable prototype inspired by Fireboy and Watergirl using Python, preferably with Pygame and only trustworthy, standard, or well-known Python technologies. The goal is NOT to create a perfect or fully polished clone. The goal is to produce a clean, readable, well-structured starter codebase that another teammate can continue working on easily.
+
+This is a collaboration-oriented handoff project. Please optimize for:
+1. code clarity,
+2. maintainable structure,
+3. readable naming,
+4. helpful comments and docstrings,
+5. clear TODO markers,
+6. a strong README.md for future collaborators.
+
+Important mindset:
+- Start with structure before advanced features.
+- Build a clean skeleton first, then a small playable vertical slice.
+- Avoid overengineering.
+- Prefer simple, explicit logic over clever but confusing code.
+- Make every file understandable to a student teammate reading it for the first time.
+
+Project requirements:
+Create a small 2D platformer prototype inspired by Fireboy and Watergirl with:
+- two controllable characters,
+- platform movement,
+- gravity and jumping,
+- solid tile/platform collision,
+- basic hazards,
+- a goal/exit system,
+- at least one sample level,
+- code organized so future level expansion is easy.
+
+Use Python + Pygame.
+
+Please generate the project as a multi-file codebase with the following priorities.
+
+========================================
+HIGH-LEVEL GOAL
+========================================
+
+Build a starter project for a Fireboy and Watergirl style game where:
+- Player 1 controls Fireboy
+- Player 2 controls Watergirl
+- Both can move left/right and jump
+- They interact with a simple level made of platforms and hazards
+- Fireboy is immune to fire hazards but dies in water hazards
+- Watergirl is immune to water hazards but dies in fire hazards
+- Optional neutral hazards like toxic goo can kill both
+- Each player has their own exit door
+- The level is completed only when both players reach their correct exits
+
+Do NOT try to implement every advanced mechanic from the original game unless it fits cleanly into the structure.
+For the first pass, focus on a solid, playable prototype and excellent organization.
+
+========================================
+IMPLEMENTATION SCOPE
+========================================
+
+Please implement the following in the initial version:
+
+1. Game window and main loop
+   - Fixed-size window
+   - Stable frame rate
+   - Clear update-draw structure
+
+2. Two-player controls
+   - Fireboy:
+     - A / D to move left/right
+     - W to jump
+   - Watergirl:
+     - Left / Right arrows to move
+     - Up arrow to jump
+
+3. Physics
+   - Gravity
+   - Horizontal movement
+   - Jumping
+   - Axis-aligned collision handling with platforms
+   - Prevent double-jumping unless intentionally designed
+   - Basic grounded detection
+
+4. Level representation
+   - Use a simple level format that is easy to edit later
+   - For example:
+     - a tile map using strings, OR
+     - level data structures listing platforms, hazards, and exits
+   - Keep it readable and expandable
+   - Include one sample level
+
+5. Hazards
+   - Fire pool / fire hazard
+   - Water pool / water hazard
+   - Optional green hazard that kills both
+   - Collision with the wrong hazard should trigger loss/reset behavior
+
+6. Goal system
+   - Fireboy must reach fire exit
+   - Watergirl must reach water exit
+   - Win only when both are at correct exits
+
+7. Reset / restart
+   - Reset level on death
+   - Optional keyboard shortcut to restart level
+
+8. Basic UI
+   - Title text
+   - Simple win/lose/reset message
+   - Minimal but readable visuals using colored rectangles if needed
+
+9. Documentation and collaboration readiness
+   - Strong README.md at project root
+   - Docstrings on major classes/functions
+   - Inline comments that explain WHY a design choice exists
+   - Clear TODO markers for unfinished improvements
+
+========================================
+NON-GOALS FOR THE FIRST PASS
+========================================
+
+Do NOT spend too much time on these unless the codebase is already clean and stable:
+- advanced animations
+- sound effects
+- moving elevators
+- buttons/levers
+- diamonds/collectibles
+- fancy menus
+- complex particle systems
+- multiple levels with progression
+- networking
+- AI players
+- overly detailed art assets
+
+You may leave these as clearly labeled TODOs.
+
+========================================
+PROJECT STRUCTURE
+========================================
+
+Please create a clean file structure like this, or something very close to it:
+
+project_root/
+  README.md
+  requirements.txt
+  main.py
+  settings.py
+  colors.py
+  game/
+    __init__.py
+    game_manager.py
+    level.py
+    player.py
+    objects.py
+    physics.py
+    ui.py
+  assets/
+    .gitkeep
+
+If you think a slightly different structure is better, keep it simple and explain why in README.md.
+
+========================================
+CODE ORGANIZATION REQUIREMENTS
+========================================
+
+Please structure the code with clear responsibilities. For example:
+
+- main.py
+  Entry point. Initializes pygame and starts the game.
+
+- settings.py
+  Screen size, FPS, tile size, physics constants, player movement constants.
+
+- colors.py
+  Centralized color definitions for readability.
+
+- game_manager.py
+  Coordinates game states, reset logic, update loop, and drawing.
+
+- level.py
+  Contains level data and logic for constructing platforms, hazards, and exits.
+
+- player.py
+  Defines Player class for Fireboy and Watergirl.
+  Include movement, collision state, hazard rules, and exit logic.
+
+- objects.py
+  Defines reusable objects such as Platform, Hazard, ExitDoor.
+
+- physics.py
+  Helper functions for collision detection or movement resolution if needed.
+
+- ui.py
+  Minimal text rendering and status display.
+
+Please make sure names are descriptive and human-readable.
+Examples of preferred naming:
+- horizontalVelocity instead of vx
+- isOnGround instead of groundedFlag
+- checkHazardCollision() instead of chkHaz()
+- levelResetRequested instead of rr
+
+========================================
+STYLE REQUIREMENTS
+========================================
+
+Write code as if another student will inherit it tomorrow.
+
+Please follow these style rules:
+
+1. Use descriptive names everywhere.
+2. Add docstrings to every major class and function.
+3. Add comments that explain reasoning, not obvious syntax.
+4. Keep functions short when possible.
+5. Avoid giant files if logic can be separated cleanly.
+6. Avoid magic numbers; put reusable constants in settings.py.
+7. Use TODO comments for unfinished work, with enough detail that another person can continue immediately.
+
+Examples of good TODO comments:
+- TODO: Add moving platform support here. Current collision assumes all platforms are static rectangles.
+- TODO: Replace rectangle placeholders with sprite assets once the gameplay logic is finalized.
+- TODO: Refactor level loading into external JSON if we decide to support multiple levels.
+
+========================================
+GAME DESIGN DETAILS
+========================================
+
+Please use simple rectangle-based visuals unless assets are truly necessary.
+
+Players:
+- Fireboy should be rendered in a red/orange color.
+- Watergirl should be rendered in a blue/cyan color.
+- Each player should have:
+  - position
+  - size
+  - velocity
+  - movement speed
+  - jump strength
+  - grounded state
+  - player type ("fire" or "water")
+  - alive/dead or reset state
+  - exit reached flag
+
+Hazards:
+- Fire hazard:
+  - safe for Fireboy
+  - deadly for Watergirl
+- Water hazard:
+  - safe for Watergirl
+  - deadly for Fireboy
+- Green hazard:
+  - deadly for both
+
+Exits:
+- Fire exit only counts for Fireboy
+- Water exit only counts for Watergirl
+- The game is won when both players are standing in their matching exits
+
+Platforms:
+- Use axis-aligned rectangles
+- Make collision behavior stable and understandable
+
+Level:
+- Include a small test level with:
+  - ground
+  - a few elevated platforms
+  - at least one fire hazard
+  - at least one water hazard
+  - both exits
+- Make the layout simple enough to test both movement and hazard rules
+
+========================================
+README REQUIREMENTS
+========================================
+
+At the root of the project, include a README.md that clearly explains the project for a collaborator.
+
+The README.md MUST include:
+
+1. Project option chosen
+   - Clearly say this is the game/project option for HW7
+   - Brief description of what was built
+   - Brief description of what was intentionally left unfinished
+
+2. Setup instructions
+   - Python version guidance if relevant
+   - How to install dependencies
+   - How to run the game
+
+3. Controls
+   - Fireboy controls
+   - Watergirl controls
+   - Restart/reset controls if implemented
+
+4. Current features
+   - What currently works
+
+5. Unfinished / future work
+   - What still needs to be done
+   - Mention likely next steps for the teammate
+
+6. Design decisions
+   - Why the code is organized the way it is
+   - Why the level system is simple
+   - Why placeholder graphics are used
+
+7. Prompt log
+   Include a section called something like "Prompt Log" that records:
+   - which AI model(s) or tool(s) were used in Phase 1
+   - the key prompts that shaped the work
+
+Because this is a handoff-friendly collaboration project, the Prompt Log should be explicit and readable.
+
+If you need example wording, include entries like:
+- Tool/Model Used: Cursor with GPT-based code generation assistance
+- Purpose: Generate starter architecture for a two-player platformer inspired by Fireboy and Watergirl
+- Key Prompt Summary: Asked for a collaboration-friendly Python + Pygame structure with clear TODOs, README, and modular files
+
+Please make the README polished and actually useful.
+
+========================================
+DELIVERABLE FORMAT
+========================================
+
+Please output:
+1. the full file tree,
+2. then the content of each file,
+3. with clear headings for each file.
+
+For example:
+- File: README.md
+- File: requirements.txt
+- File: main.py
+- File: settings.py
+- etc.
+
+========================================
+QUALITY BAR
+========================================
+
+The resulting code should:
+- run with minimal setup,
+- be readable by a student partner,
+- have sensible architecture,
+- include at least one playable sample level,
+- be incomplete in a productive way rather than messy,
+- leave the next collaborator with a clear path forward.
+
+If you need to simplify something, choose simplicity and clarity over feature completeness.
+
+Please begin by generating the file tree and then the full contents of all files.
+
+
+--------------------------------------------------------------------------------
+
+
+In Cursor I continued by giving more detailed instructions on specific features, UI designs, and bug fixes.
